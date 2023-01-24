@@ -2,13 +2,13 @@ package usecase
 
 import (
 	"database/sql"
-	"lonkidely/technopark-dbms-forum/internal/pkg/params"
 
 	stdErrors "github.com/pkg/errors"
 
 	"lonkidely/technopark-dbms-forum/internal/forum/repository"
 	"lonkidely/technopark-dbms-forum/internal/models"
 	"lonkidely/technopark-dbms-forum/internal/pkg/errors"
+	"lonkidely/technopark-dbms-forum/internal/pkg/params"
 	userRepository "lonkidely/technopark-dbms-forum/internal/user/repository"
 )
 
@@ -70,4 +70,10 @@ func (fu *forumUsecase) GetForumThreads(forum *models.Forum, params *params.GetF
 		return []*models.Thread{}, errExist
 	}
 
+	threads, err := fu.forumRepo.GetForumThreads(forum, params)
+	if err != nil {
+		return []*models.Thread{}, errExist
+	}
+
+	return threads, nil
 }

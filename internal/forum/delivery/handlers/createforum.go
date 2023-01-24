@@ -1,14 +1,16 @@
 package handlers
 
 import (
-	"lonkidely/technopark-dbms-forum/internal/forum/delivery/models"
-	"lonkidely/technopark-dbms-forum/internal/pkg/wrapper"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	stdErrors "github.com/pkg/errors"
 
+	"lonkidely/technopark-dbms-forum/internal/forum/delivery/models"
 	"lonkidely/technopark-dbms-forum/internal/forum/usecase"
+	"lonkidely/technopark-dbms-forum/internal/pkg/errors"
 	"lonkidely/technopark-dbms-forum/internal/pkg/handler"
+	"lonkidely/technopark-dbms-forum/internal/pkg/wrapper"
 )
 
 type createForumHandler struct {
@@ -34,12 +36,16 @@ func (h *createForumHandler) Action(w http.ResponseWriter, r *http.Request) {
 	}
 
 	forum, err := h.forumUsecase.CreateForum(request.GetForum())
+	response := models.NewCreateForumResponse(forum)
+
 	if err != nil {
+		if stdErrors.Is(err, errors.ErrForumExist) {
+			wrapper.Response(w, http.StatusConflict, response)
+			return
+		}
 		wrapper.ErrorResponse(w, err)
 		return
 	}
-
-	response := models.NewCreateForumResponse(forum)
 
 	wrapper.Response(w, http.StatusCreated, response)
 }

@@ -1,16 +1,16 @@
 package models
 
 import (
-	"lonkidely/technopark-dbms-forum/internal/pkg/params"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 
 	"lonkidely/technopark-dbms-forum/internal/models"
+	"lonkidely/technopark-dbms-forum/internal/pkg/params"
 )
 
-//go:generate easyjson -disallow_unknown_fields -omit_empty forumdetails.go
+//go:generate easyjson -disallow_unknown_fields -omit_empty getforumthreads.go
 
 type GetForumThreadsRequest struct {
 	Slug  string

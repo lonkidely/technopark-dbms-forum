@@ -1,10 +1,11 @@
 package wrapper
 
 import (
-	"lonkidely/technopark-dbms-forum/internal/pkg/errors"
 	"net/http"
 
 	"github.com/mailru/easyjson"
+
+	"lonkidely/technopark-dbms-forum/internal/pkg/errors"
 )
 
 func getEasyJSON(someStruct interface{}) ([]byte, error) {

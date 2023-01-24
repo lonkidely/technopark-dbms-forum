@@ -37,13 +37,11 @@ func easyjson2d00218DecodeLonkidelyTechnoparkDbmsForumInternalModels(in *jlexer.
 		}
 		switch key {
 		case "id":
-			out.Id = int(in.Int())
+			out.ID = int(in.Int())
 		case "title":
 			out.Title = string(in.String())
 		case "created":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.Created).UnmarshalJSON(data))
-			}
+			out.Created = string(in.String())
 		case "author":
 			out.Author = string(in.String())
 		case "forum":
@@ -75,7 +73,7 @@ func easyjson2d00218EncodeLonkidelyTechnoparkDbmsForumInternalModels(out *jwrite
 	{
 		const prefix string = ",\"id\":"
 		out.RawString(prefix[1:])
-		out.Int(int(in.Id))
+		out.Int(int(in.ID))
 	}
 	{
 		const prefix string = ",\"title\":"
@@ -85,7 +83,7 @@ func easyjson2d00218EncodeLonkidelyTechnoparkDbmsForumInternalModels(out *jwrite
 	{
 		const prefix string = ",\"created\":"
 		out.RawString(prefix)
-		out.Raw((in.Created).MarshalJSON())
+		out.String(string(in.Created))
 	}
 	{
 		const prefix string = ",\"author\":"

@@ -1,49 +1,53 @@
 CREATE EXTENSION IF NOT EXISTS citext;
 
-CREATE TABLE users (
-                       nickname CITEXT PRIMARY KEY,
-                       fullname TEXT NOT NULL,
-                       email CITEXT UNIQUE,
-                       about TEXT
+CREATE UNLOGGED TABLE users
+(
+    nickname CITEXT PRIMARY KEY,
+    fullname TEXT NOT NULL,
+    email    CITEXT UNIQUE,
+    about    TEXT
 );
 
-CREATE TABLE forum (
-                       slug    CITEXT PRIMARY KEY,
-                       title   TEXT NOT NULL,
-                       "user"  CITEXT,
-                       posts   BIGINT DEFAULT 0,
-                       threads BIGINT DEFAULT 0,
+CREATE UNLOGGED TABLE forum
+(
+    slug    CITEXT PRIMARY KEY,
+    title   TEXT NOT NULL,
+    "user"  CITEXT,
+    posts   BIGINT DEFAULT 0,
+    threads BIGINT DEFAULT 0,
 
-                       FOREIGN KEY ("user") REFERENCES "users" (nickname)
+    FOREIGN KEY ("user") REFERENCES "users" (nickname)
 );
 
-CREATE TABLE threads (
-                         id      SERIAL PRIMARY KEY,
-                         title   TEXT NOT NULL,
-                         created TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                         author  CITEXT REFERENCES "users" (Nickname),
-                         forum   CITEXT REFERENCES "forum" (slug),
-                         message TEXT NOT NULL,
-                         slug    CITEXT UNIQUE,
-                         votes   INT DEFAULT 0
+CREATE UNLOGGED TABLE threads
+(
+    id      SERIAL PRIMARY KEY,
+    title   TEXT NOT NULL,
+    created TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    author  CITEXT REFERENCES "users" (Nickname),
+    forum   CITEXT REFERENCES "forum" (slug),
+    message TEXT NOT NULL,
+    slug    CITEXT UNIQUE,
+    votes   INT                      DEFAULT 0
 );
 
-CREATE TABLE posts (
-                       id       BIGSERIAL PRIMARY KEY,
-                       author   CITEXT NOT NULL,
-                       created  TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-                       forum    CITEXT,
-                       message  TEXT NOT NULL,
-                       parent   BIGINT DEFAULT 0,
-                       id_thread   INT,
-                       path     BIGINT[] DEFAULT ARRAY []::INTEGER[],
-                       isEdited BOOLEAN DEFAULT FALSE,
+CREATE UNLOGGED TABLE posts
+(
+    id        BIGSERIAL PRIMARY KEY,
+    author    CITEXT NOT NULL,
+    created   TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    forum     CITEXT,
+    message   TEXT   NOT NULL,
+    parent    BIGINT                   DEFAULT 0,
+    id_thread INT,
+    path      BIGINT[]                 DEFAULT ARRAY []::INTEGER[],
+    isEdited  BOOLEAN                  DEFAULT FALSE,
 
-                       FOREIGN KEY (author) REFERENCES "users"  (nickname),
-                       FOREIGN KEY (id_thread) REFERENCES "threads" (id)
+    FOREIGN KEY (author) REFERENCES "users" (nickname),
+    FOREIGN KEY (id_thread) REFERENCES "threads" (id)
 );
 
-CREATE TABLE votes
+CREATE UNLOGGED TABLE votes
 (
     id        BIGSERIAL PRIMARY KEY,
     author    CITEXT REFERENCES "users" (nickname),
@@ -57,7 +61,7 @@ CREATE TABLE votes
 CREATE UNLOGGED TABLE forum_users
 (
     nickname CITEXT NOT NULL,
-    fullname TEXT NOT NULL,
+    fullname TEXT   NOT NULL,
     about    TEXT,
     email    CITEXT,
     slug     CITEXT NOT NULL,
@@ -79,7 +83,6 @@ CREATE INDEX if not exists forum_slug ON forum using hash (slug);
 CREATE UNIQUE INDEX if not exists forum_users_unique ON forum_users (slug, nickname);
 CREATE INDEX if not exists thr_slug ON threads using hash (slug);
 CREATE INDEX if not exists thr_date ON threads (created);
--- CREATE INDEX if not exists thr_votes ON threads (id, votes);
 CREATE INDEX if not exists thr_forum ON threads using hash (forum);
 CREATE INDEX if not exists thr_forum_date ON threads (forum, created);
 
@@ -105,7 +108,8 @@ new_fullname CITEXT;
 BEGIN
 SELECT fullname, about, email FROM users WHERE nickname = NEW.author INTO new_fullname, new_about, new_email;
 INSERT INTO forum_users (nickname, fullname, about, email, slug)
-VALUES (NEW.author, new_fullname, new_about, new_email, NEW.forum) on conflict do nothing;
+VALUES (NEW.author, new_fullname, new_about, new_email, NEW.forum)
+    on conflict do nothing;
 RETURN NEW;
 end
 $update_forum_user$ LANGUAGE plpgsql;
@@ -124,12 +128,13 @@ CREATE TRIGGER post_update_forum_user
 CREATE OR REPLACE FUNCTION insertVote() RETURNS TRIGGER AS
 $insert_vote$
 BEGIN
-UPDATE threads SET votes=(votes+NEW.voice) WHERE id=NEW.id_thread;
+UPDATE threads SET votes=(votes + NEW.voice) WHERE id = NEW.id_thread;
 RETURN NEW;
 end
 $insert_vote$ LANGUAGE plpgsql;
 CREATE TRIGGER insert_vote
-    BEFORE INSERT ON votes
+    BEFORE INSERT
+    ON votes
     FOR EACH ROW
     EXECUTE PROCEDURE insertVote();
 
@@ -138,13 +143,14 @@ CREATE OR REPLACE FUNCTION updateVotes() RETURNS TRIGGER AS
 $update_votes$
 BEGIN
     IF OLD.voice <> NEW.voice THEN
-UPDATE threads SET votes=(votes-OLD.voice+NEW.voice) WHERE id=NEW.id_thread;
+UPDATE threads SET votes=(votes - OLD.voice + NEW.voice) WHERE id = NEW.id_thread;
 END IF;
 return NEW;
 end
 $update_votes$ LANGUAGE plpgsql;
 CREATE TRIGGER update_votes
-    BEFORE UPDATE ON votes
+    BEFORE UPDATE
+    ON votes
     FOR EACH ROW
     EXECUTE PROCEDURE updateVotes();
 
@@ -159,14 +165,15 @@ RETURN NULL;
 END;
 $insert_thread$ LANGUAGE plpgsql;
 CREATE TRIGGER insert_thread
-    AFTER INSERT ON threads
+    AFTER INSERT
+    ON threads
     FOR EACH ROW
     EXECUTE PROCEDURE insertThread();
 
 CREATE OR REPLACE FUNCTION updatePath() RETURNS TRIGGER AS
 $update_path$
 DECLARE
-parentPath BIGINT[];
+parentPath          BIGINT[];
     first_parent_thread INT;
 BEGIN
     IF (NEW.parent IS NULL) THEN

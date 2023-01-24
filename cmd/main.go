@@ -66,6 +66,9 @@ func main() {
 	forumDetailsHandler := forumHandlers.NewForumDetailsHandler(forumUse)
 	forumDetailsHandler.Configure(router)
 
+	getForumThreadsHandler := forumHandlers.NewGetForumThreadsHandler(forumUse)
+	getForumThreadsHandler.Configure(router)
+
 	server := http.Server{
 		Addr:         ":5000",
 		Handler:      router,

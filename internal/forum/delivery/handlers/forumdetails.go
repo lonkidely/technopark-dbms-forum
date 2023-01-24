@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"lonkidely/technopark-dbms-forum/internal/forum/delivery/models"
-	"lonkidely/technopark-dbms-forum/internal/pkg/wrapper"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
+	"lonkidely/technopark-dbms-forum/internal/forum/delivery/models"
 	"lonkidely/technopark-dbms-forum/internal/forum/usecase"
 	"lonkidely/technopark-dbms-forum/internal/pkg/handler"
+	"lonkidely/technopark-dbms-forum/internal/pkg/wrapper"
 )
 
 type forumDetailsHandler struct {

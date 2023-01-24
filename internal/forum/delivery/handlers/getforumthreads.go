@@ -26,20 +26,20 @@ func (h *getForumThreadsHandler) Configure(r *mux.Router) {
 }
 
 func (h *getForumThreadsHandler) Action(w http.ResponseWriter, r *http.Request) {
-	request := models.NewForumDetailsRequest()
+	request := models.NewGetForumThreadsRequest()
 
 	errBind := request.Bind(r)
 	if errBind != nil {
 		return
 	}
 
-	forum, err := h.forumUsecase.GetForumDetails(request.GetForum())
+	forum, err := h.forumUsecase.GetForumThreads(request.GetForum(), request.GetParams())
 	if err != nil {
 		wrapper.ErrorResponse(w, err)
 		return
 	}
 
-	response := models.NewForumDetailsResponse(forum)
+	response := models.NewGetForumThreadsResponse(forum)
 
 	wrapper.Response(w, http.StatusOK, response)
 }
