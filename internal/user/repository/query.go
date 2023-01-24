@@ -33,7 +33,10 @@ WHERE nickname = $1
 
 	UpdateUser = `
 UPDATE users
-SET fullname = COALESCE(NULLIF($2, ''), fullname), email = COALESCE(NULLIF($3, ''), email), about = COALESCE(NULLIF($4, ''), about)
+SET 
+    fullname = COALESCE(NULLIF($2, ''), fullname), 
+    email = COALESCE(NULLIF($3, ''), email), 
+    about = COALESCE(NULLIF($4, ''), about)
 WHERE nickname = $1
 RETURNING nickname, fullname, email, about
 `

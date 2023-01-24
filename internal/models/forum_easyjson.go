@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson9e1087fdDecodeLonkidelyTechnoparkDbmsForumInternalModels(in *jlexer.Lexer, out *User) {
+func easyjsonC8d74561DecodeLonkidelyTechnoparkDbmsForumInternalModels(in *jlexer.Lexer, out *Forum) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -36,14 +36,16 @@ func easyjson9e1087fdDecodeLonkidelyTechnoparkDbmsForumInternalModels(in *jlexer
 			continue
 		}
 		switch key {
-		case "nickname":
-			out.Nickname = string(in.String())
-		case "fullname":
-			out.FullName = string(in.String())
-		case "about":
-			out.About = string(in.String())
-		case "email":
-			out.Email = string(in.String())
+		case "title":
+			out.Title = string(in.String())
+		case "user":
+			out.User = string(in.String())
+		case "slug":
+			out.Slug = string(in.String())
+		case "posts":
+			out.Posts = int(in.Int())
+		case "threads":
+			out.Threads = int(in.Int())
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -58,53 +60,58 @@ func easyjson9e1087fdDecodeLonkidelyTechnoparkDbmsForumInternalModels(in *jlexer
 		in.Consumed()
 	}
 }
-func easyjson9e1087fdEncodeLonkidelyTechnoparkDbmsForumInternalModels(out *jwriter.Writer, in User) {
+func easyjsonC8d74561EncodeLonkidelyTechnoparkDbmsForumInternalModels(out *jwriter.Writer, in Forum) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"nickname\":"
+		const prefix string = ",\"title\":"
 		out.RawString(prefix[1:])
-		out.String(string(in.Nickname))
+		out.String(string(in.Title))
 	}
 	{
-		const prefix string = ",\"fullname\":"
+		const prefix string = ",\"user\":"
 		out.RawString(prefix)
-		out.String(string(in.FullName))
+		out.String(string(in.User))
 	}
 	{
-		const prefix string = ",\"about\":"
+		const prefix string = ",\"slug\":"
 		out.RawString(prefix)
-		out.String(string(in.About))
+		out.String(string(in.Slug))
 	}
 	{
-		const prefix string = ",\"email\":"
+		const prefix string = ",\"posts\":"
 		out.RawString(prefix)
-		out.String(string(in.Email))
+		out.Int(int(in.Posts))
+	}
+	{
+		const prefix string = ",\"threads\":"
+		out.RawString(prefix)
+		out.Int(int(in.Threads))
 	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
-func (v User) MarshalJSON() ([]byte, error) {
+func (v Forum) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjson9e1087fdEncodeLonkidelyTechnoparkDbmsForumInternalModels(&w, v)
+	easyjsonC8d74561EncodeLonkidelyTechnoparkDbmsForumInternalModels(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v User) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson9e1087fdEncodeLonkidelyTechnoparkDbmsForumInternalModels(w, v)
+func (v Forum) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC8d74561EncodeLonkidelyTechnoparkDbmsForumInternalModels(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
-func (v *User) UnmarshalJSON(data []byte) error {
+func (v *Forum) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjson9e1087fdDecodeLonkidelyTechnoparkDbmsForumInternalModels(&r, v)
+	easyjsonC8d74561DecodeLonkidelyTechnoparkDbmsForumInternalModels(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *User) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson9e1087fdDecodeLonkidelyTechnoparkDbmsForumInternalModels(l, v)
+func (v *Forum) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC8d74561DecodeLonkidelyTechnoparkDbmsForumInternalModels(l, v)
 }

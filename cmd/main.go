@@ -9,6 +9,9 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/jackc/pgx/stdlib"
 
+	forumHandlers "lonkidely/technopark-dbms-forum/internal/forum/delivery/handlers"
+	forumRepository "lonkidely/technopark-dbms-forum/internal/forum/repository"
+	forumUsecase "lonkidely/technopark-dbms-forum/internal/forum/usecase"
 	userHandlers "lonkidely/technopark-dbms-forum/internal/user/delivery/handlers"
 	userRepository "lonkidely/technopark-dbms-forum/internal/user/repository"
 	userUsecase "lonkidely/technopark-dbms-forum/internal/user/usecase"
@@ -41,9 +44,11 @@ func main() {
 
 	// Repositories
 	userRepo := userRepository.NewUserRepository(postgres)
+	forumRepo := forumRepository.NewForumRepository(postgres)
 
 	// Usecases
 	userUse := userUsecase.NewUserUsecase(userRepo)
+	forumUse := forumUsecase.NewForumUsecase(forumRepo, userRepo)
 
 	// Delivery
 	createUserHandler := userHandlers.NewCreateUserHandler(userUse)
@@ -54,6 +59,12 @@ func main() {
 
 	updateUserInfoHandler := userHandlers.NewUpdateUserInfoHandler(userUse)
 	updateUserInfoHandler.Configure(router)
+
+	createForumHandler := forumHandlers.NewCreateForumHandler(forumUse)
+	createForumHandler.Configure(router)
+
+	forumDetailsHandler := forumHandlers.NewForumDetailsHandler(forumUse)
+	forumDetailsHandler.Configure(router)
 
 	server := http.Server{
 		Addr:         ":5000",

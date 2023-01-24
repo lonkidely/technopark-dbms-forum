@@ -10,14 +10,18 @@ var (
 	ErrUserExist        = stdErrors.New("such user exist")
 	ErrUserNotExist     = stdErrors.New("user doesn't exist")
 	ErrEmailAlreadyUsed = stdErrors.New("email already used")
+	ErrForumExist       = stdErrors.New("such forum exist")
+	ErrForumNotExist    = stdErrors.New("such forum not exist")
 )
 
 func NewErrorClassifier() map[string]int {
 	res := make(map[string]int)
 
-	res[ErrUserNotExist.Error()] = http.StatusConflict
+	res[ErrUserExist.Error()] = http.StatusConflict
 	res[ErrUserNotExist.Error()] = http.StatusNotFound
 	res[ErrEmailAlreadyUsed.Error()] = http.StatusConflict
+	res[ErrForumExist.Error()] = http.StatusConflict
+	res[ErrForumNotExist.Error()] = http.StatusNotFound
 
 	return res
 }
