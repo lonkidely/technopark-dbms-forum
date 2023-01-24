@@ -1,6 +1,8 @@
 package repository
 
 const (
+	CheckForumExist = `SELECT EXISTS (SELECT 1 FROM forum WHERE slug = $1)`
+
 	GetForumInfo = `
 SELECT
     slug, title, "user", posts, threads

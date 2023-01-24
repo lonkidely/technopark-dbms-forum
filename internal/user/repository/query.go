@@ -27,7 +27,7 @@ FROM users
 WHERE nickname = $1
 `
 
-	CheckUserExistByNickname = `SELECT EXISTS (SELECT 1 FROM users WHERE nickname = $1)`
+	CheckUserExist = `SELECT EXISTS (SELECT 1 FROM users WHERE nickname = $1)`
 
 	CheckEmailNotUsed = `SELECT EXISTS (SELECT 1 FROM users WHERE email = $1 AND nickname != $2)`
 

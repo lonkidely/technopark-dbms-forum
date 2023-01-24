@@ -9,6 +9,7 @@ import (
 
 type ForumRepository interface {
 	GetForumInfo(forum *models.Forum) (models.Forum, error)
+	CheckForumExist(forum *models.Forum) (bool, error)
 	CreateForum(forum *models.Forum) (models.Forum, error)
 	GetForumThreads(forum *models.Forum, params *params.GetForumThreadsParams) ([]*models.Thread, error)
 	GetForumUsers(forum *models.Forum, params *params.GetForumUsersParams) ([]*models.User, error)
@@ -36,6 +37,22 @@ func (fr *forumRepository) GetForumInfo(forum *models.Forum) (models.Forum, erro
 
 	if err != nil {
 		return models.Forum{}, err
+	}
+
+	return result, nil
+}
+
+func (fr *forumRepository) CheckForumExist(forum *models.Forum) (bool, error) {
+	result := false
+
+	row := fr.db.QueryRow(CheckForumExist)
+	if row.Err() != nil {
+		return false, row.Err()
+	}
+
+	err := row.Scan(&result)
+	if err != nil {
+		return false, err
 	}
 
 	return result, nil

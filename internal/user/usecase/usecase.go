@@ -47,7 +47,7 @@ func (uu *userUsecase) GetUserInfo(user *models.User) (models.User, error) {
 }
 
 func (uu *userUsecase) UpdateUser(user *models.User) (models.User, error) {
-	exist, errExist := uu.userRepo.CheckUserExistByNickname(user)
+	exist, errExist := uu.userRepo.CheckUserExist(user)
 	if errExist != nil {
 		return models.User{}, errExist
 	}

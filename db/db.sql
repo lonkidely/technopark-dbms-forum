@@ -27,7 +27,7 @@ CREATE UNLOGGED TABLE threads
     author  CITEXT REFERENCES "users" (Nickname),
     forum   CITEXT REFERENCES "forum" (slug),
     message TEXT NOT NULL,
-    slug    CITEXT UNIQUE,
+    slug    CITEXT,
     votes   INT                      DEFAULT 0
 );
 

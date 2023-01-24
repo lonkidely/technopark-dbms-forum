@@ -13,7 +13,7 @@ type UserRepository interface {
 	GetUsers(user *models.User) ([]models.User, error)
 	CreateUser(user *models.User) (models.User, error)
 	GetUserInfo(user *models.User) (models.User, error)
-	CheckUserExistByNickname(user *models.User) (bool, error)
+	CheckUserExist(user *models.User) (bool, error)
 	CheckEmailIsNotUsed(user *models.User) (bool, error)
 	UpdateUser(user *models.User) (models.User, error)
 }
@@ -86,9 +86,9 @@ func (ur *userRepository) GetUserInfo(user *models.User) (models.User, error) {
 	return response, nil
 }
 
-func (ur *userRepository) CheckUserExistByNickname(user *models.User) (bool, error) {
+func (ur *userRepository) CheckUserExist(user *models.User) (bool, error) {
 	response := false
-	err := ur.db.QueryRow(CheckUserExistByNickname, user.Nickname).Scan(&response)
+	err := ur.db.QueryRow(CheckUserExist, user.Nickname).Scan(&response)
 	return response, err
 }
 
