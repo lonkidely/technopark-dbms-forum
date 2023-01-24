@@ -64,11 +64,11 @@ CREATE UNLOGGED TABLE forum_users
     fullname TEXT   NOT NULL,
     about    TEXT,
     email    CITEXT,
-    slug     CITEXT NOT NULL,
+    forum     CITEXT NOT NULL,
 
     FOREIGN KEY (nickname) REFERENCES "users" (nickname),
-    FOREIGN KEY (slug) REFERENCES "forum" (slug),
-    UNIQUE (nickname, slug)
+    FOREIGN KEY (forum) REFERENCES "forum" (slug),
+    UNIQUE (nickname, forum)
 );
 
 
@@ -80,7 +80,7 @@ CREATE INDEX if not exists user_nickname ON users using hash (nickname);
 CREATE INDEX if not exists user_email ON users using hash (email);
 CREATE INDEX if not exists forum_slug ON forum using hash (slug);
 
-CREATE UNIQUE INDEX if not exists forum_users_unique ON forum_users (slug, nickname);
+CREATE UNIQUE INDEX if not exists forum_users_unique ON forum_users (forum, nickname);
 CREATE INDEX if not exists thr_slug ON threads using hash (slug);
 CREATE INDEX if not exists thr_date ON threads (created);
 CREATE INDEX if not exists thr_forum ON threads using hash (forum);
@@ -107,7 +107,7 @@ new_fullname CITEXT;
     new_email    CITEXT;
 BEGIN
 SELECT fullname, about, email FROM users WHERE nickname = NEW.author INTO new_fullname, new_about, new_email;
-INSERT INTO forum_users (nickname, fullname, about, email, slug)
+INSERT INTO forum_users (nickname, fullname, about, email, forum)
 VALUES (NEW.author, new_fullname, new_about, new_email, NEW.forum)
     on conflict do nothing;
 RETURN NEW;

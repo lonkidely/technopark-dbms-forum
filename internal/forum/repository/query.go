@@ -75,4 +75,49 @@ WHERE forum = $1 AND created <= $2
 ORDER BY created DESC
 LIMIT $3
 `
+
+	GetForumUsersAsc = `
+SELECT
+    nickname,
+    fullname,
+    about,
+    email
+FROM forum_users
+WHERE forum = $1
+ORDER BY nickname
+LIMIT $2
+`
+	GetForumUsersDesc = `
+SELECT
+    nickname,
+    fullname,
+    about,
+    email
+FROM forum_users
+WHERE forum = $1
+ORDER BY nickname DESC
+LIMIT $2
+`
+	GetForumUsersSinceAsc = `
+SELECT
+    nickname,
+    fullname,
+    about,
+    email
+FROM forum_users
+WHERE forum = $1 AND nickname > $2
+ORDER BY nickname
+LIMIT $3
+`
+	GetForumUsersSinceDesc = `
+SELECT
+    nickname,
+    fullname,
+    about,
+    email
+FROM forum_users
+WHERE forum = $1 AND nickname < $2
+ORDER BY nickname DESC
+LIMIT $3
+`
 )

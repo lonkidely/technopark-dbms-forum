@@ -16,6 +16,7 @@ type ForumUsecase interface {
 	CreateForum(forum *models.Forum) (models.Forum, error)
 	GetForumDetails(forum *models.Forum) (models.Forum, error)
 	GetForumThreads(forum *models.Forum, params *params.GetForumThreadsParams) ([]*models.Thread, error)
+	GetForumUsers(forum *models.Forum, params *params.GetForumUsersParams) ([]*models.User, error)
 }
 
 type forumUsecase struct {
@@ -76,4 +77,21 @@ func (fu *forumUsecase) GetForumThreads(forum *models.Forum, params *params.GetF
 	}
 
 	return threads, nil
+}
+
+func (fu *forumUsecase) GetForumUsers(forum *models.Forum, params *params.GetForumUsersParams) ([]*models.User, error) {
+	_, errExist := fu.forumRepo.GetForumInfo(forum)
+	if stdErrors.Is(errExist, sql.ErrNoRows) {
+		return []*models.User{}, errors.ErrForumNotExist
+	}
+	if errExist != nil {
+		return []*models.User{}, errExist
+	}
+
+	users, err := fu.forumRepo.GetForumUsers(forum, params)
+	if err != nil {
+		return []*models.User{}, errExist
+	}
+
+	return users, nil
 }

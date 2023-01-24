@@ -5,3 +5,9 @@ type GetForumThreadsParams struct {
 	Since string
 	Desc  bool
 }
+
+type GetForumUsersParams struct {
+	Limit int
+	Since string
+	Desc  bool
+}
