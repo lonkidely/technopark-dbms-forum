@@ -3,6 +3,7 @@ package models
 import (
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/mailru/easyjson"
@@ -14,12 +15,12 @@ import (
 
 //easyjson:json
 type CreateThreadRequest struct {
-	Slug    string `json:"slug"`
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	Message string `json:"message"`
-	Created string `json:"created"`
-	Forum   string `json:"forum"`
+	Slug    string    `json:"slug"`
+	Title   string    `json:"title"`
+	Author  string    `json:"author"`
+	Message string    `json:"message"`
+	Created time.Time `json:"created"`
+	Forum   string    `json:"forum"`
 }
 
 func NewCreateThreadRequest() *CreateThreadRequest {
@@ -50,14 +51,14 @@ func (req *CreateThreadRequest) GetThread() *models.Thread {
 
 //easyjson:json
 type CreateThreadResponse struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Created string `json:"created"`
-	Author  string `json:"author"`
-	Forum   string `json:"forum"`
-	Message string `json:"message"`
-	Slug    string `json:"slug"`
-	Votes   int    `json:"votes"`
+	ID      int       `json:"id"`
+	Title   string    `json:"title"`
+	Created time.Time `json:"created"`
+	Author  string    `json:"author"`
+	Forum   string    `json:"forum"`
+	Message string    `json:"message"`
+	Slug    string    `json:"slug"`
+	Votes   int       `json:"votes"`
 }
 
 func NewCreateThreadResponse(thread *models.Thread) CreateThreadResponse {

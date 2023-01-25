@@ -1,8 +1,7 @@
 package repository
 
 import (
-	"database/sql"
-
+	"github.com/jackc/pgx"
 	stdErrors "github.com/pkg/errors"
 
 	"lonkidely/technopark-dbms-forum/internal/models"
@@ -19,10 +18,10 @@ type UserRepository interface {
 }
 
 type userRepository struct {
-	db *sql.DB
+	db *pgx.ConnPool
 }
 
-func NewUserRepository(db *sql.DB) UserRepository {
+func NewUserRepository(db *pgx.ConnPool) UserRepository {
 	return &userRepository{
 		db: db,
 	}
@@ -61,9 +60,9 @@ func (ur *userRepository) GetUsers(user *models.User) ([]models.User, error) {
 }
 
 func (ur *userRepository) CreateUser(user *models.User) (models.User, error) {
-	row := ur.db.QueryRow(CreateUser, user.Nickname, user.FullName, user.Email, user.About)
-	if row.Err() != nil {
-		return models.User{}, row.Err()
+	_, err := ur.db.Exec(CreateUser, user.Nickname, user.FullName, user.Email, user.About)
+	if err != nil {
+		return models.User{}, err
 	}
 	return *user, nil
 }
@@ -76,7 +75,7 @@ func (ur *userRepository) GetUserInfo(user *models.User) (models.User, error) {
 		&response.Email,
 		&response.About)
 
-	if stdErrors.Is(err, sql.ErrNoRows) {
+	if stdErrors.Is(err, pgx.ErrNoRows) {
 		return models.User{}, errors.ErrUserNotExist
 	}
 	if err != nil {

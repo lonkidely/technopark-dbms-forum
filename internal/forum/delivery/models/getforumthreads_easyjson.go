@@ -115,7 +115,9 @@ func easyjson85ca7118DecodeLonkidelyTechnoparkDbmsForumInternalForumDeliveryMode
 		case "message":
 			out.Message = string(in.String())
 		case "created":
-			out.Created = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Created).UnmarshalJSON(data))
+			}
 		case "votes":
 			out.Votes = int(in.Int())
 		default:
@@ -192,7 +194,7 @@ func easyjson85ca7118EncodeLonkidelyTechnoparkDbmsForumInternalForumDeliveryMode
 		}
 		out.String(string(in.Message))
 	}
-	if in.Created != "" {
+	if true {
 		const prefix string = ",\"created\":"
 		if first {
 			first = false
@@ -200,7 +202,7 @@ func easyjson85ca7118EncodeLonkidelyTechnoparkDbmsForumInternalForumDeliveryMode
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Created))
+		out.Raw((in.Created).MarshalJSON())
 	}
 	if in.Votes != 0 {
 		const prefix string = ",\"votes\":"

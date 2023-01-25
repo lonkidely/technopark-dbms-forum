@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx"
 
 	"lonkidely/technopark-dbms-forum/internal/models"
 	"lonkidely/technopark-dbms-forum/internal/pkg/params"
@@ -16,10 +16,10 @@ type ForumRepository interface {
 }
 
 type forumRepository struct {
-	db *sql.DB
+	db *pgx.ConnPool
 }
 
-func NewForumRepository(db *sql.DB) ForumRepository {
+func NewForumRepository(db *pgx.ConnPool) ForumRepository {
 	return &forumRepository{
 		db: db,
 	}
@@ -46,9 +46,6 @@ func (fr *forumRepository) CheckForumExist(forum *models.Forum) (bool, error) {
 	result := false
 
 	row := fr.db.QueryRow(CheckForumExist)
-	if row.Err() != nil {
-		return false, row.Err()
-	}
 
 	err := row.Scan(&result)
 	if err != nil {
@@ -104,7 +101,7 @@ func (fr *forumRepository) GetForumThreads(forum *models.Forum, params *params.G
 	var result []*models.Thread
 
 	for rows.Next() {
-		currentThread := &models.Thread{}
+		currentThread := models.Thread{}
 		errScan := rows.Scan(
 			&currentThread.ID,
 			&currentThread.Title,
@@ -119,7 +116,7 @@ func (fr *forumRepository) GetForumThreads(forum *models.Forum, params *params.G
 			return nil, err
 		}
 
-		result = append(result, currentThread)
+		result = append(result, &currentThread)
 	}
 
 	return result, nil

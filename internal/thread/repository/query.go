@@ -14,6 +14,7 @@ SELECT
     votes
 FROM threads
 WHERE slug = $1
+LIMIT 1
 `
 	GetThreadInfoByID = `
 SELECT
@@ -27,6 +28,7 @@ SELECT
     votes
 FROM threads
 WHERE id = $1
+LIMIT 1
 `
 	CreateThread = `
 INSERT INTO threads

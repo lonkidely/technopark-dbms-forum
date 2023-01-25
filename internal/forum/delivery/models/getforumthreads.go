@@ -3,6 +3,7 @@ package models
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 
@@ -62,14 +63,14 @@ func (req *GetForumThreadsRequest) GetParams() *params.GetForumThreadsParams {
 
 //easyjson:json
 type GetForumThreadResponse struct {
-	ID      int    `json:"id"`
-	Title   string `json:"title"`
-	Author  string `json:"author"`
-	Forum   string `json:"forum"`
-	Slug    string `json:"slug"`
-	Message string `json:"message"`
-	Created string `json:"created"`
-	Votes   int    `json:"votes"`
+	ID      int       `json:"id"`
+	Title   string    `json:"title"`
+	Author  string    `json:"author"`
+	Forum   string    `json:"forum"`
+	Slug    string    `json:"slug"`
+	Message string    `json:"message"`
+	Created time.Time `json:"created"`
+	Votes   int       `json:"votes"`
 }
 
 //easyjson:json

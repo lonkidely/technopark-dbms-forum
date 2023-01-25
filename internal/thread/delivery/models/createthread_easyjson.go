@@ -41,7 +41,9 @@ func easyjson9d4b6d10DecodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		case "title":
 			out.Title = string(in.String())
 		case "created":
-			out.Created = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Created).UnmarshalJSON(data))
+			}
 		case "author":
 			out.Author = string(in.String())
 		case "forum":
@@ -86,7 +88,7 @@ func easyjson9d4b6d10EncodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		}
 		out.String(string(in.Title))
 	}
-	if in.Created != "" {
+	if true {
 		const prefix string = ",\"created\":"
 		if first {
 			first = false
@@ -94,7 +96,7 @@ func easyjson9d4b6d10EncodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Created))
+		out.Raw((in.Created).MarshalJSON())
 	}
 	if in.Author != "" {
 		const prefix string = ",\"author\":"
@@ -200,7 +202,9 @@ func easyjson9d4b6d10DecodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		case "message":
 			out.Message = string(in.String())
 		case "created":
-			out.Created = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.Created).UnmarshalJSON(data))
+			}
 		case "forum":
 			out.Forum = string(in.String())
 		default:
@@ -257,7 +261,7 @@ func easyjson9d4b6d10EncodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		}
 		out.String(string(in.Message))
 	}
-	if in.Created != "" {
+	if true {
 		const prefix string = ",\"created\":"
 		if first {
 			first = false
@@ -265,7 +269,7 @@ func easyjson9d4b6d10EncodeLonkidelyTechnoparkDbmsForumInternalThreadDeliveryMod
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Created))
+		out.Raw((in.Created).MarshalJSON())
 	}
 	if in.Forum != "" {
 		const prefix string = ",\"forum\":"

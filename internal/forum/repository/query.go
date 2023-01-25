@@ -8,6 +8,7 @@ SELECT
     slug, title, "user", posts, threads
 FROM forum
 WHERE slug = $1
+LIMIT 1
 `
 
 	CreateForum = `

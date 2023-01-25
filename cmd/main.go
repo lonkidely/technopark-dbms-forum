@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jackc/pgx"
 	_ "github.com/jackc/pgx/stdlib"
 
 	forumHandlers "lonkidely/technopark-dbms-forum/internal/forum/delivery/handlers"
@@ -27,20 +27,27 @@ const (
 	PostgresURL = "user=lonkidely dbname=tech_db_forum password=lonkidely host=localhost port=5432"
 )
 
-func getPostgres() *sql.DB {
-	conn, err := sql.Open("pgx", PostgresURL)
+func getPostgres() *pgx.ConnPool {
+	conn, err := pgx.ParseConnectionString(PostgresURL)
 	if err != nil {
 		log.Fatalln("Can't parse postgres url", err)
 	}
 
-	conn.SetMaxOpenConns(100)
+	conn.PreferSimpleProtocol = true
 
-	err = conn.Ping()
-	if err != nil {
-		log.Fatalln(err)
+	cfg := pgx.ConnPoolConfig{
+		ConnConfig:     conn,
+		MaxConnections: 200,
+		AfterConnect:   nil,
+		AcquireTimeout: 0,
 	}
 
-	return conn
+	pool, err := pgx.NewConnPool(cfg)
+	if err != nil {
+		log.Fatalln("error creating pool", err)
+	}
+
+	return pool
 }
 
 func main() {
