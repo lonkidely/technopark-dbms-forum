@@ -23,3 +23,7 @@ type GetPostsParams struct {
 	Desc  bool
 	Sort  string
 }
+
+type PostDetailsParams struct {
+	Related []string
+}

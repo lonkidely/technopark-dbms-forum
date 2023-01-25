@@ -12,6 +12,9 @@ import (
 	forumHandlers "lonkidely/technopark-dbms-forum/internal/forum/delivery/handlers"
 	forumRepository "lonkidely/technopark-dbms-forum/internal/forum/repository"
 	forumUsecase "lonkidely/technopark-dbms-forum/internal/forum/usecase"
+	postHandlers "lonkidely/technopark-dbms-forum/internal/post/delivery/handlers"
+	postRepository "lonkidely/technopark-dbms-forum/internal/post/repository"
+	postUsecase "lonkidely/technopark-dbms-forum/internal/post/usecase"
 	serviceHandlers "lonkidely/technopark-dbms-forum/internal/service/delivery/handlers"
 	serviceRepository "lonkidely/technopark-dbms-forum/internal/service/repository"
 	serviceUsecase "lonkidely/technopark-dbms-forum/internal/service/usecase"
@@ -60,12 +63,14 @@ func main() {
 	forumRepo := forumRepository.NewForumRepository(postgres)
 	serviceRepo := serviceRepository.NewServiceRepository(postgres)
 	threadRepo := threadRepository.NewThreadRepository(postgres)
+	postRepo := postRepository.NewPostRepository(postgres)
 
 	// Usecases
 	userUse := userUsecase.NewUserUsecase(userRepo)
 	forumUse := forumUsecase.NewForumUsecase(forumRepo, userRepo)
 	serviceUse := serviceUsecase.NewServiceUsecase(serviceRepo)
 	threadUse := threadUsecase.NewThreadUsecase(threadRepo, forumRepo, userRepo)
+	postUse := postUsecase.NewPostUsecase(postRepo)
 
 	// Delivery
 	createUserHandler := userHandlers.NewCreateUserHandler(userUse)
@@ -112,6 +117,12 @@ func main() {
 
 	createPostsHandler := threadHandlers.NewCreatePostsHandler(threadUse)
 	createPostsHandler.Configure(router)
+
+	getPostDetailsHanlder := postHandlers.NewGetPostDetailsHandler(postUse)
+	getPostDetailsHanlder.Configure(router)
+
+	updatePostHandler := postHandlers.NewUpdatePostHandler(postUse)
+	updatePostHandler.Configure(router)
 
 	server := http.Server{
 		Addr:         ":5000",

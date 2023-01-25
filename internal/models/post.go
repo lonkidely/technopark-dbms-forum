@@ -12,3 +12,10 @@ type Post struct {
 	Thread   int
 	IsEdited bool
 }
+
+type PostDetails struct {
+	Post   Post
+	Author User
+	Thread Thread
+	Forum  Forum
+}

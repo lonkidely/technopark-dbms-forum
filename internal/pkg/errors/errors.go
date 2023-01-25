@@ -14,6 +14,8 @@ var (
 	ErrForumNotExist    = stdErrors.New("such forum not exist")
 	ErrThreadExist      = stdErrors.New("such thread exist")
 	ErrThreadNotExist   = stdErrors.New("such thread not exist")
+	ErrPostExist        = stdErrors.New("such post exist")
+	ErrPostNotExist     = stdErrors.New("such post not exist")
 )
 
 func NewErrorClassifier() map[string]int {
@@ -26,6 +28,8 @@ func NewErrorClassifier() map[string]int {
 	res[ErrForumNotExist.Error()] = http.StatusNotFound
 	res[ErrThreadExist.Error()] = http.StatusConflict
 	res[ErrThreadNotExist.Error()] = http.StatusNotFound
+	res[ErrPostExist.Error()] = http.StatusConflict
+	res[ErrPostNotExist.Error()] = http.StatusNotFound
 
 	return res
 }
