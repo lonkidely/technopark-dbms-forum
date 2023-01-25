@@ -397,15 +397,5 @@ func (tr *threadRepository) CreatePosts(thread *models.Thread, posts []*models.P
 		response = append(response, post)
 	}
 
-	if pgErr, ok := row.Err().(pgx.PgError); ok {
-		if pgErr.Code == "00409" {
-			return nil, row.Err()
-		}
-
-		if pgErr.Code == "23503" {
-			return nil, row.Err()
-		}
-	}
-
 	return response, err
 }

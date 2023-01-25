@@ -30,4 +30,4 @@ docker-build:
 
 .PHONY: docker-run
 docker-run:
-	docker run --rm -p 5000:5000 -p 5432:5432 --name park -t park
+	docker run --rm -p 5000:5000 --name park -t park

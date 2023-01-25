@@ -34,6 +34,5 @@ COPY . .
 COPY --from=build /app/main .
 
 EXPOSE 5000
-EXPOSE 5432
 ENV PGPASSWORD lonkidely
 CMD service postgresql start && psql -h localhost -d tech_db_forum -U lonkidely -p 5432 -a -q -f ./db/db.sql && ./main
