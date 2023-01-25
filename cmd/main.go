@@ -86,6 +86,9 @@ func main() {
 	getForumThreadsHandler := forumHandlers.NewGetForumThreadsHandler(forumUse)
 	getForumThreadsHandler.Configure(router)
 
+	getForumUsersHandler := forumHandlers.NewGetForumUsersHandler(forumUse)
+	getForumUsersHandler.Configure(router)
+
 	clearHandler := serviceHandlers.NewClearHandler(serviceUse)
 	clearHandler.Configure(router)
 
@@ -103,6 +106,12 @@ func main() {
 
 	voteThreadHandler := threadHandlers.NewVoteThreadHandler(threadUse)
 	voteThreadHandler.Configure(router)
+
+	getThreadPostsHandler := threadHandlers.NewGetThreadPostsHandler(threadUse)
+	getThreadPostsHandler.Configure(router)
+
+	createPostsHandler := threadHandlers.NewCreatePostsHandler(threadUse)
+	createPostsHandler.Configure(router)
 
 	server := http.Server{
 		Addr:         ":5000",

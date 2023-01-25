@@ -172,23 +172,11 @@ CREATE TRIGGER insert_thread
 
 CREATE OR REPLACE FUNCTION updatePath() RETURNS TRIGGER AS
 $update_path$
-DECLARE
-parentPath          BIGINT[];
-    first_parent_thread INT;
 BEGIN
-    IF (NEW.parent IS NULL) THEN
-        NEW.path := array_append(new.path, new.id);
-ELSE
-SELECT path FROM posts WHERE id = new.parent INTO parentPath;
-SELECT id_thread FROM posts WHERE id = parentPath[1] INTO first_parent_thread;
-IF NOT FOUND OR first_parent_thread != NEW.id_thread THEN
-            RAISE EXCEPTION 'parent is from different thread' USING ERRCODE = '00409';
-end if;
-        NEW.path := NEW.path || parentPath || new.id;
-end if;
+    new.path = (SELECT path FROM posts WHERE id = new.parent) || new.id;
 UPDATE forum SET Posts=Posts + 1 WHERE forum.slug = new.forum;
 RETURN new;
-end
+END;
 $update_path$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_path

@@ -14,6 +14,8 @@ type ThreadUsecase interface {
 	GetThreadDetails(thread *models.Thread) (models.Thread, error)
 	UpdateThreadDetails(thread *models.Thread) (models.Thread, error)
 	VoteThread(thread *models.Thread, params *params.VoteThreadParams) (models.Thread, error)
+	GetPosts(thread *models.Thread, params *params.GetPostsParams) ([]models.Post, error)
+	CreatePosts(thread *models.Thread, posts []*models.Post) ([]models.Post, error)
 }
 
 type threadUsecase struct {
@@ -98,4 +100,58 @@ func (tu *threadUsecase) VoteThread(thread *models.Thread, params *params.VoteTh
 	}
 
 	return tu.GetThreadDetails(&currentThread)
+}
+
+func (tu *threadUsecase) GetPosts(thread *models.Thread, params *params.GetPostsParams) ([]models.Post, error) {
+	currentThread, threadErr := tu.GetThreadDetails(thread)
+	if threadErr != nil {
+		return nil, threadErr
+	}
+
+	if params.Sort == "flat" {
+		return tu.threadRepo.GetThreadPostsFlat(&currentThread, params)
+	}
+	if params.Sort == "tree" {
+		return tu.threadRepo.GetThreadPostsTree(&currentThread, params)
+	}
+	return tu.threadRepo.GetThreadPostsParent(&currentThread, params)
+}
+
+func (tu *threadUsecase) CreatePosts(thread *models.Thread, posts []*models.Post) ([]models.Post, error) {
+	currentThread, threadErr := tu.GetThreadDetails(thread)
+	if threadErr != nil {
+		return nil, threadErr
+	}
+
+	if len(posts) == 0 {
+		return []models.Post{}, nil
+	}
+
+	currentUser, errUser := tu.userRepo.GetUserInfo(&models.User{Nickname: posts[0].Author})
+	if errUser != nil {
+		return nil, errUser
+	}
+
+	posts[0].Author = currentUser.Nickname
+
+	if posts[0].Parent != 0 {
+		var postWithParent *models.Post
+		var postErr error
+
+		postWithParent, postErr = tu.threadRepo.GetParentPost(posts[0])
+		if postErr != nil {
+			return []models.Post{}, postErr
+		}
+
+		if postWithParent.Thread != currentThread.ID {
+			return nil, errors.ErrThreadExist
+		}
+	}
+
+	resultPosts, err := tu.threadRepo.CreatePosts(&currentThread, posts)
+	if err != nil {
+		return []models.Post{}, err
+	}
+
+	return resultPosts, nil
 }

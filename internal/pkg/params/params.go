@@ -16,3 +16,10 @@ type VoteThreadParams struct {
 	Nickname string
 	Voice    int
 }
+
+type GetPostsParams struct {
+	Limit int
+	Since int
+	Desc  bool
+	Sort  string
+}
