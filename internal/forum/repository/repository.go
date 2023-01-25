@@ -2,8 +2,10 @@ package repository
 
 import (
 	"github.com/jackc/pgx"
+	stdErrors "github.com/pkg/errors"
 
 	"lonkidely/technopark-dbms-forum/internal/models"
+	"lonkidely/technopark-dbms-forum/internal/pkg/errors"
 	"lonkidely/technopark-dbms-forum/internal/pkg/params"
 )
 
@@ -34,6 +36,10 @@ func (fr *forumRepository) GetForumInfo(forum *models.Forum) (models.Forum, erro
 		&result.User,
 		&result.Posts,
 		&result.Threads)
+
+	if stdErrors.Is(err, pgx.ErrNoRows) {
+		return models.Forum{}, errors.ErrForumNotExist
+	}
 
 	if err != nil {
 		return models.Forum{}, err

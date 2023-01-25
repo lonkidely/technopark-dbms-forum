@@ -11,3 +11,8 @@ type GetForumUsersParams struct {
 	Since string
 	Desc  bool
 }
+
+type VoteThreadParams struct {
+	Nickname string
+	Voice    int
+}

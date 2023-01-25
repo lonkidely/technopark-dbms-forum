@@ -95,6 +95,15 @@ func main() {
 	createThreadHandler := threadHandlers.NewCreateThreadHandler(threadUse)
 	createThreadHandler.Configure(router)
 
+	getThreadDetailsHandler := threadHandlers.NewGetThreadDetailsHandler(threadUse)
+	getThreadDetailsHandler.Configure(router)
+
+	updateThreadDetailsHandler := threadHandlers.NewUpdateThreadDetailsHandler(threadUse)
+	updateThreadDetailsHandler.Configure(router)
+
+	voteThreadHandler := threadHandlers.NewVoteThreadHandler(threadUse)
+	voteThreadHandler.Configure(router)
+
 	server := http.Server{
 		Addr:         ":5000",
 		Handler:      router,
